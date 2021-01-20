@@ -86,7 +86,6 @@ public class Candidate {
 				}
 			}
 		}
-		System.out.println("This is my fitness score: " + fitnessScore + "\n\n");
 		return fitnessScore;
     }
     

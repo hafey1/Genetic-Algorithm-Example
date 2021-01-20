@@ -64,12 +64,12 @@ public class cnfga {
 		Population population = new Population(10);
 		// Set the maximum number of generations that
 		// you wish to loop through before you give up.
-		int maxGens = 10;
+		
 		// Create an initial population of random candidates.
 		// (Use the number of unique variables in a formula to create 
 		// candidates of appropriate size.)   
+		
 		int i = 0;
-	  
 		while (i < population.size()){
 			//create random candidates with RNG
 			Candidate cand = new Candidate(formula.numUniqueVars);
@@ -79,23 +79,23 @@ public class cnfga {
 		}
 		population.seedPop(10);
 		
-	genNum = 1;
+	int genNum = 1;
+	int maxGens = 10;
 	int fitnessScore = 30;
 	
 	// if we are using cnf "fit enough" is when all clauses evaluate to true 
 	// or when fitness score is equal to the number of clauses
-	mutate(candidates[0]);
-	
+	selectParent(population, formula);
 	while( fitnessScore < formula.clauses.size() && genNum < maxGens ){      
       Population childPopulation = new Population(10);
       
       // Since we are creating two new candidates from two
       //   randomly-selected candidates, we'll only have to
       //   loop for 
-		int halfPop = popSize / 2
+		int halfPop = population.size() / 2;
       //   to replace the entire population
         
-      for(int i = 0; i < halfPop; i++){
+      for(int j = 0; j < halfPop; j++){
           // Select two candidates; remember, the probability of 
           //   a candidate's selection is weighted by its fitness.
           
@@ -115,9 +115,9 @@ public class cnfga {
     // If you found a fit candidate, print out
     // the solution; else, print "Solution not found."
   }
-      
-   
-/*   private static Candidate selectParent(Population pop, Formula formula) {
+	
+
+	private static Candidate selectParent(Population pop, Formula formula) {
         // Returns a parent based on what the selection strategy returns.
         // In our case, we will use stochastic acceptance.
         // -- Find the maximum fitness within the given population.
@@ -125,20 +125,51 @@ public class cnfga {
         // random and checking them with stochasticAcceptance()
         // until it returns true. Then you can return the "elite"
         // parent.
-        
+		
+		Candidate maxFitness = pop.getFittest(formula);
+		int maxFitnessScore = maxFitness.getFitness(formula);
+		
+		Random rn = new Random();
+		
+		boolean accept = false;
+		int i = 0;
+		int eliteIndex = 0;
+		System.out.println(pop.size());
+		while (!accept){
+			eliteIndex = rn.nextInt(pop.size());
+			accept = stochasticAcceptance(pop.getCandidate(eliteIndex), formula, maxFitnessScore);
+			i++;
+		}
+		//System.out.println("I am the elite parent at index: " + eliteIndex + "\n the max fitness is: " + maxFitnessScore + "\n after " + i + " iterations");
+		//pop.printPop(formula.numUniqueVars);
+		//pop.getCandidate(eliteIndex).printCandidate();
+		return pop.getCandidate(eliteIndex);
      }
-*/   
+   
       
-/*   private static Boolean stochasticAcceptance(Candidate candidate, Formula formula,
-           int maxPopFitness){
-           
-        // Calculate the odds of keeping a candidate based on
+   private static Boolean stochasticAcceptance(Candidate candidate, Formula formula, int maxPopFitness){
+		// Calculate the odds of keeping a candidate based on
         // odds = fitness of this candidate/maxPopFitness
         // Accept the candidate if a randomly generated number between
         // 0 and 1 is < the odds.
+		
+		boolean accept = false;
+		
+		Random rn = new Random();
+		float rfg = rn.nextFloat();
+			   
+        int fit = candidate.getFitness(formula);
+		float odds = (float) fit / maxPopFitness;
+        
+		if (Float.compare(rfg, odds) < 0){
+			accept = true;
+		}
 
+		//System.out.print("\n rfg < odds: " + rfg + " < " + odds + " " + accept + "\n");
+		return accept;
     }
-*/
+
+
     
     
 /*  private static Candidate crossover(Candidate parent1, Candidate parent2){
@@ -149,13 +180,15 @@ public class cnfga {
 */
     
     
-  private static void mutate(Candidate candidate) {
-      // Flip a random bit in the candidate.
-	  Random rn = new Random();
-	  int mutationPoint = candidate.getLength();
-	  mutationPoint = rn.nextInt(mutationPoint);
-	  System.out.println("mutation point is: " + mutationPoint);
+	private static void mutate(Candidate candidate) {
+		// Flip a random bit in the candidate.
+		Random rn = new Random();
+		int mutationPoint = candidate.getLength();
+		mutationPoint = rn.nextInt(mutationPoint);
 	  
+		boolean initalVal = candidate.getValue(mutationPoint);
+		candidate.setValue(mutationPoint, initalVal ^ true);
+
     }
 
 
