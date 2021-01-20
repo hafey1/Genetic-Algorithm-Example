@@ -4,6 +4,7 @@
 import java.io.*;
 import java.util.BitSet;
 import java.util.Random;
+import java.util.*;
 import java.lang.Math;
 
 // Since we are trying to focus on the GA aspect of the
@@ -49,7 +50,7 @@ public class Candidate {
       // Returns the value at a given index
 		boolean result = false;
 		if(index >= numVals || index < 0){
-			System.out.println("Error: Bit is not set because index is out of bounds, please enter index from 0 to " + (numVals - 1));
+			System.out.println("Error: Bit is not set because index is out of bounds. Please enter variables as nondescending characters\nCorrect: (a | b) ^ c OR (a | b) ^ b\nIncorrect: (a | b) ^ g");
 			return result;
 		}
 		result = truthVals.get(index);
@@ -63,9 +64,30 @@ public class Candidate {
     }
     
     public int getFitness(Formula formula) {
-      // Returns the fitness of a candidate; this is the number of clauses
-      // in a formula made true by the candidate.
-		return -1;
+		// Returns the fitness of a candidate; this is the number of clauses
+		// in a formula made true by the candidate.
+		int fitnessScore = 0;
+		
+		//get each clause 
+		Iterator<HashSet<String>> cla = formula.clauses.iterator();
+		while(cla.hasNext()) {
+			
+			HashSet<String> dis = cla.next();
+			
+			//get character and ascii value of each character in each clause
+			Iterator<String> disjunction = dis.iterator();
+			while(disjunction.hasNext()){
+				
+				char member = disjunction.next().charAt(0);
+				int asciiVal = (int) member - 97;
+				if(getValue(asciiVal)){
+					fitnessScore++;
+					break;
+				}
+			}
+		}
+		System.out.println("This is my fitness score: " + fitnessScore + "\n\n");
+		return fitnessScore;
     }
     
     public void printCandidate(){

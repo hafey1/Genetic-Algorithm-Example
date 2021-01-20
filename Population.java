@@ -23,9 +23,18 @@ public class Population {
 	}
 
     public Candidate getFittest(Formula formula) {
-      // Returns the fittest candidate of the population with 
-      // respect to a formula
-		return null;
+		Candidate fittest = candidates[0];
+		//int tracker = 0;
+		for (int i = 1; i < candidates.length; i++) {
+			int fit = candidates[i].getFitness(formula);
+			if(fit >= fittest.getFitness(formula)) {
+				fittest = candidates[i];
+				//tracker = i;
+			}
+	  }
+		//System.out.println(tracker + " is the fittest candidate with a score of: " +fittest.getFitness(formula));
+		
+		return fittest;
 	}
 
   

@@ -74,26 +74,28 @@ public class cnfga {
 			//create random candidates with RNG
 			Candidate cand = new Candidate(formula.numUniqueVars);
 			// use candidate seed to initialize
-			//cand.printCandidate();
 			population.saveCandidate(i, cand);	
 			i++;
 		}
 		population.seedPop(10);
-		System.out.println("Candidate size: " + population.getCandidate(0).getLength() + "\n\nPopulation size: " + population.size());
-		population.printPop(formula.numUniqueVars);
-	//genNum = 1;            
-    //while( the fittest candidate is not fit enough and
-    //       genNum < maxGens ){
-            
-      // Create a new population:
+		
+	genNum = 1;
+	int fitnessScore = 30;
+	
+	// if we are using cnf "fit enough" is when all clauses evaluate to true 
+	// or when fitness score is equal to the number of clauses
+	mutate(candidates[0]);
+	
+	while( fitnessScore < formula.clauses.size() && genNum < maxGens ){      
+      Population childPopulation = new Population(10);
       
       // Since we are creating two new candidates from two
       //   randomly-selected candidates, we'll only have to
       //   loop for 
-      //   int halfPop = popSize / 2
+		int halfPop = popSize / 2
       //   to replace the entire population
         
-      //for(int i = 0; i < halfPop; i++){
+      for(int i = 0; i < halfPop; i++){
           // Select two candidates; remember, the probability of 
           //   a candidate's selection is weighted by its fitness.
           
@@ -104,11 +106,11 @@ public class cnfga {
           // flipping a random bit.
           
           // Add the new candidates to the new population.
-      //}   
+      }   
             
         // Get the new fittest candidate
-        // genNum++;
-    //}
+		genNum++;
+    }
 
     // If you found a fit candidate, print out
     // the solution; else, print "Solution not found."
@@ -147,9 +149,14 @@ public class cnfga {
 */
     
     
-/*  private static void mutate(Candidate candidate) {
+  private static void mutate(Candidate candidate) {
       // Flip a random bit in the candidate.
+	  Random rn = new Random();
+	  int mutationPoint = candidate.getLength();
+	  mutationPoint = rn.nextInt(mutationPoint);
+	  System.out.println("mutation point is: " + mutationPoint);
+	  
     }
-*/
+
 
 }  /* end of class cnfga */
