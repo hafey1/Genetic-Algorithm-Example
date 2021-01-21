@@ -79,41 +79,65 @@ public class cnfga {
 		}
 		population.seedPop(10);
 		
-	int genNum = 1;
-	int maxGens = 10;
-	int fitnessScore = 30;
+		int genNum = 1;
+		int maxGens = 100000;
 	
-	// if we are using cnf "fit enough" is when all clauses evaluate to true 
-	// or when fitness score is equal to the number of clauses
-	selectParent(population, formula);
-	while( fitnessScore < formula.clauses.size() && genNum < maxGens ){      
-      Population childPopulation = new Population(10);
-      
-      // Since we are creating two new candidates from two
-      //   randomly-selected candidates, we'll only have to
-      //   loop for 
-		int halfPop = population.size() / 2;
-      //   to replace the entire population
-        
-      for(int j = 0; j < halfPop; j++){
-          // Select two candidates; remember, the probability of 
-          //   a candidate's selection is weighted by its fitness.
-          
-          // Use crossover to create two new candidates
-          
-          // If a randomly generated number is less than
-          // the mutation rate, mutate the candidate by
-          // flipping a random bit.
-          
-          // Add the new candidates to the new population.
-      }   
-            
-        // Get the new fittest candidate
-		genNum++;
-    }
+	
+		// if we are using cnf "fit enough" is when all clauses evaluate to true 
+		// or when fitness score is equal to the number of clauses
+		
+		Candidate fitEnough =  population.getFittest(formula);
+		int fitnessScore = fitEnough.getFitness(formula);
+		String solutionFound = "Solution not found";
+		while( fitnessScore < formula.clauses.size() && genNum < maxGens ){      
+		  
+		  // Since we are creating two new candidates from two
+		  //   randomly-selected candidates, we'll only have to
+		  //   loop for 
+			int halfPop = population.size() / 2;
+		  //   to replace the entire population
+			
+			for(int j = 0; j < halfPop; j++){
+			  
+				// Select two candidates; remember, the probability of 
+				// a candidate's selection is weighted by its fitness.
+				Candidate parent1 = selectParent(population, formula);
+				Candidate parent2 = selectParent(population, formula);
+		
+				// Use crossover to create two new candidates
+				Candidate child1 = crossover(parent1, parent2);
+				Candidate child2 = crossover(parent2, parent1);
+					
+				// If a randomly generated number is less than
+				// the mutation rate, mutate the candidate by
+				// flipping a random bit for each child.
+				Random rn = new Random();
+				if(rn.nextDouble() < mutationRate){
+					mutate(child1);
+				}
+				if(rn.nextDouble() < mutationRate){
+					mutate(child2);
+				}
+				  
+				// Add the new candidates to the new population.
+				population.saveCandidate(j, child1);
+				population.saveCandidate(halfPop + j, child2);
+				
+			}   
 
-    // If you found a fit candidate, print out
-    // the solution; else, print "Solution not found."
+		// Get the new fittest candidate
+		fitEnough = population.getFittest(formula);
+		fitnessScore = fitEnough.getFitness(formula);
+		genNum++;
+		}
+		
+		// If you found a fit candidate, print out
+		// the solution; else, print "Solution not found."
+		if( fitnessScore >= formula.clauses.size()){
+			solutionFound = "*Solution Found*\nCandidate: " + fitEnough.printCandidate();
+		}
+		System.out.println("\nFor CNF with the clauses: " + formula.clauses);
+		System.out.println(solutionFound);
   }
 	
 
@@ -140,6 +164,7 @@ public class cnfga {
 			accept = stochasticAcceptance(pop.getCandidate(eliteIndex), formula, maxFitnessScore);
 			i++;
 		}
+		//testing
 		//System.out.println("I am the elite parent at index: " + eliteIndex + "\n the max fitness is: " + maxFitnessScore + "\n after " + i + " iterations");
 		//pop.printPop(formula.numUniqueVars);
 		//pop.getCandidate(eliteIndex).printCandidate();
@@ -164,20 +189,48 @@ public class cnfga {
 		if (Float.compare(rfg, odds) < 0){
 			accept = true;
 		}
-
+		//testing
 		//System.out.print("\n rfg < odds: " + rfg + " < " + odds + " " + accept + "\n");
 		return accept;
     }
 
 
     
-    
-/*  private static Candidate crossover(Candidate parent1, Candidate parent2){
-      // Uses standard midpoint crossover to create a new candidate.
-      // If the formula has an odd number of variables,
-      // the midpoint can be approximated with truncation.
+	private static Candidate crossover(Candidate parent1, Candidate parent2){
+		// Uses standard midpoint crossover to create a new candidate.
+		// If the formula has an odd number of variables,
+		// the midpoint can be approximated with truncation.
+		
+		Candidate child = new Candidate(parent1.getLength());
+		
+		int p1start = 0;
+		int p2start = 0;
+		
+		if(parent1.getLength() % 2 == 1){
+			p2start = (parent1.getLength() / 2) + 1;
+		} else {
+			p2start = parent1.getLength() / 2;
+		}
+		
+		for(int i = 0; i < parent1.getLength(); i++){
+			
+			boolean parentValue;
+			if(i < p2start){
+				parentValue = parent1.getValue(i);
+			} else {
+				parentValue = parent2.getValue(i);
+			}
+			child.setValue(i, parentValue);
+		}
+		parent1.printCandidate();
+		System.out.println(" ");
+		parent2.printCandidate();
+		System.out.println(" ");
+		child.printCandidate();
+		
+		return child;
     }
-*/
+
     
     
 	private static void mutate(Candidate candidate) {

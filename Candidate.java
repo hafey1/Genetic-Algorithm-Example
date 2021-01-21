@@ -89,7 +89,7 @@ public class Candidate {
 		return fitnessScore;
     }
     
-    public void printCandidate(){
+    public String printCandidate(){
       // Prints out the candidate
 		String byteArrayRepresentation = "";
 		
@@ -105,6 +105,7 @@ public class Candidate {
 		}
 		intRepresentation += "}";
 		System.out.println(intRepresentation);
-    }
-
+		return intRepresentation;
+	}
+	
 }
