@@ -46,15 +46,15 @@ public class Candidate {
 		}
     }
     
-    public boolean getValue(int index){
-      // Returns the value at a given index
-		boolean result = false;
-		if(index >= numVals || index < 0){
+		/*	if(index >= numVals || index < 0){
 			System.out.println("Error: Bit is not set because index is out of bounds. Please enter variables as nondescending characters\nCorrect: (a | b) ^ c OR (a | b) ^ b\nIncorrect: (a | b) ^ g");
 			return result;
 		}
+	*/
+    public boolean getValue(int index){
+      // Returns the value at a given index
+		boolean result = false;
 		result = truthVals.get(index);
-		
 		return result;
 	}
     
@@ -78,11 +78,27 @@ public class Candidate {
 			Iterator<String> disjunction = dis.iterator();
 			while(disjunction.hasNext()){
 				
-				char member = disjunction.next().charAt(0);
-				int asciiVal = (int) member - 97;
-				if(getValue(asciiVal)){
-					fitnessScore++;
-					break;
+				String currentDisjunction = disjunction.next();
+				char member = currentDisjunction.charAt(0);
+				int asciiVal = 96;
+				
+				//if term does not have a negation
+				if(member != '-'){
+					asciiVal = (int) member - 97;
+					if(getValue(asciiVal)){
+						fitnessScore++;
+						break;
+					}
+				} 
+				//if term has a negation
+				else {
+					
+					member = currentDisjunction.charAt(1);
+					asciiVal = (int) member - 97;
+					if(!getValue(asciiVal)){
+						fitnessScore++;
+						break;
+					}
 				}
 			}
 		}

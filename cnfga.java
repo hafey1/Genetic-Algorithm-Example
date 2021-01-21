@@ -80,7 +80,7 @@ public class cnfga {
 		population.seedPop(10);
 		
 		int genNum = 1;
-		int maxGens = 100000;
+		int maxGens = 1000;
 	
 	
 		// if we are using cnf "fit enough" is when all clauses evaluate to true 
@@ -158,7 +158,7 @@ public class cnfga {
 		boolean accept = false;
 		int i = 0;
 		int eliteIndex = 0;
-		System.out.println(pop.size());
+
 		while (!accept){
 			eliteIndex = rn.nextInt(pop.size());
 			accept = stochasticAcceptance(pop.getCandidate(eliteIndex), formula, maxFitnessScore);
@@ -222,12 +222,6 @@ public class cnfga {
 			}
 			child.setValue(i, parentValue);
 		}
-		parent1.printCandidate();
-		System.out.println(" ");
-		parent2.printCandidate();
-		System.out.println(" ");
-		child.printCandidate();
-		
 		return child;
     }
 
