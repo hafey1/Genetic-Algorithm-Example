@@ -164,10 +164,7 @@ public class cnfga {
 			accept = stochasticAcceptance(pop.getCandidate(eliteIndex), formula, maxFitnessScore);
 			i++;
 		}
-		//testing
-		//System.out.println("I am the elite parent at index: " + eliteIndex + "\n the max fitness is: " + maxFitnessScore + "\n after " + i + " iterations");
-		//pop.printPop(formula.numUniqueVars);
-		//pop.getCandidate(eliteIndex).printCandidate();
+
 		return pop.getCandidate(eliteIndex);
      }
    
@@ -189,8 +186,6 @@ public class cnfga {
 		if (Float.compare(rfg, odds) < 0){
 			accept = true;
 		}
-		//testing
-		//System.out.print("\n rfg < odds: " + rfg + " < " + odds + " " + accept + "\n");
 		return accept;
     }
 

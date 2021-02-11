@@ -53,9 +53,7 @@ public class Candidate {
 	*/
     public boolean getValue(int index){
       // Returns the value at a given index
-		boolean result = false;
-		result = truthVals.get(index);
-		return result;
+		return truthVals.get(index);
 	}
     
     public int getLength(){
